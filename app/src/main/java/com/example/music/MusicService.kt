@@ -1,10 +1,8 @@
 package com.example.music
 
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Binder
@@ -12,7 +10,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
