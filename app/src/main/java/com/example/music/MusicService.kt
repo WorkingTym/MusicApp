@@ -191,7 +191,7 @@ class MusicService : Service() {
             .setSmallIcon(track.image)
             .setLargeIcon(BitmapFactory.decodeResource(resources, track.image))
             .build()
-        isPlaying.update { mediaPlayer.isPlaying }
+        isPlaying.update { true }
         startForeground(1, notification)
 
     }

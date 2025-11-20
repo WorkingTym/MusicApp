@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -16,6 +17,14 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
+
+private val BlackColorScheme = darkColorScheme(
+    background = Color.Black,
+    surface = Color.Black,
+    onBackground = Color.White,
+    onSurface = Color.White
+)
+
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
@@ -47,7 +56,7 @@ fun MusicTheme(
         }
 
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> BlackColorScheme
     }
 
     MaterialTheme(
