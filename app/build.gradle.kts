@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation (libs.androidx.media)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
