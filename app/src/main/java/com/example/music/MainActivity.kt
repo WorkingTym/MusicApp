@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
     private var service: MusicService? = null
     private var isBound = false
+    private val favTracks = mutableStateListOf<Track>()  // Favorites list
+
 
     private val isPlayingFlow = MutableStateFlow(false)
     private val currentTrackFlow = MutableStateFlow(Track())
@@ -80,10 +82,17 @@ class MainActivity : ComponentActivity() {
                             isPlaying = isPlaying,
                             onPlayPause = { service?.playPause() },
                             onNext = { service?.next() },
-                            onPrevious = { service?.prev() }
+                            onPrevious = { service?.prev() },
+                            onTrackSelected = { service?.playSelectedTrack(it) },
+                            favTracks = favTracks, // Pass the favorites list
+                            onFavClick = { track ->
+                                if (favTracks.contains(track)) favTracks.remove(track)
+                                else favTracks.add(track)
+                            }
                         )
+
                     }
-                    is BottomNavItem.Fav -> PlaceholderScreen("Favorites", modifier)
+                    is BottomNavItem.Fav -> FavoritesScreen(favTracks, onTrackSelected = { service?.playSelectedTrack(it) }, modifier)
                     is BottomNavItem.Library -> PlaceholderScreen("Library", modifier)
                     is BottomNavItem.Search -> PlaceholderScreen("Search", modifier)
                 }

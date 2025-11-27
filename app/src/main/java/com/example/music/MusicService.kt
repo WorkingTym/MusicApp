@@ -128,6 +128,18 @@ class MusicService : Service() {
         sendNotification(currentTrack.value)
     }
 
+    fun playSelectedTrack(track: Track) {
+        currentTrack.value = track
+        mediaPlayer.reset()
+        mediaPlayer.setDataSource(this, getRawUri(track.id))
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            mediaPlayer.start()
+            isPlaying.value = true
+            sendNotification(track)
+            updateDurations()
+        }
+    }
 
     fun prev() {
         restartPlayer()

@@ -37,8 +37,13 @@ fun ModernMusicPlayerScreen(
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
     onNext: () -> Unit,
-    onPrevious: () -> Unit
+    onPrevious: () -> Unit,
+    onTrackSelected: (Track) -> Unit,
+    favTracks: List<Track>,          // <-- favorites list
+    onFavClick: (Track) -> Unit
 ) {
+
+    val isFav = remember(track, favTracks) { track in favTracks } // check favorite state
 
     /** IMPROVED ROTATION LOGIC (freezes correctly when paused) **/
     val infinite = rememberInfiniteTransition()
@@ -96,10 +101,14 @@ fun ModernMusicPlayerScreen(
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Icon(
-                    Icons.Default.FavoriteBorder, "",
-                    tint = Color.White, modifier = Modifier.size(24.dp)
-                )
+
+                IconButton(onClick = { onFavClick(track) }) {
+                    Icon(
+                        if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,  // Toggle icon
+                        contentDescription = if (isFav) "Unfavorite" else "Favorite",
+                        tint = if (isFav) Color.Red else Color.White
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -157,53 +166,11 @@ fun ModernMusicPlayerScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
             /** NEXT SONGS **/
-            Text(
-                text = "Next Songs",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.align(Alignment.Start)
-            )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
-                val currentIndex = songList.indexOfFirst { it.id == track.id }
-                val nextTrack = remember(track) {
-                    if (songList.isNotEmpty() && currentIndex != -1)
-                        songList[(currentIndex + 1) % songList.size]
-                    else
-                        null
-                }
-
-                val albumBitmap: ImageBitmap = runCatching {
-                    ImageBitmap.imageResource(id = nextTrack?.image ?: 0)
-                }.getOrElse {
-                    // Fallback for preview/debug
-                    ImageBitmap.imageResource(R.drawable.ek_mulakat)
-                }
-
-
-                Image(
-                    bitmap = albumBitmap,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                )
-
-
+            NextSongsRow(currentTrack = track, songList = songList,
+                onTrackClick  = onTrackSelected)
 
                 Spacer(modifier = Modifier.width(12.dp))
-
-                Text(text = nextTrack?.name ?: "", color = Color.White, fontSize = 16.sp)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = "3:23", color = Color.Gray, fontSize = 14.sp)
-            }
         }
     }
 }
