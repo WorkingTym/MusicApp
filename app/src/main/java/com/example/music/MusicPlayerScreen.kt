@@ -24,9 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,19 +35,12 @@ import java.io.File
 @Composable
 fun ModernMusicPlayerScreen(
     track: Track,
+    songList: List<Track>,
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit
 ) {
-
-    /** LOAD IMAGE AS BITMAP (Better rotation) **/
-    val albumBitmap: ImageBitmap = runCatching {
-        ImageBitmap.imageResource(id = track.image)
-    }.getOrElse  {
-        // Fallback for preview/debug
-        ImageBitmap.imageResource(R.drawable.ek_mulakat)
-    }
 
     /** IMPROVED ROTATION LOGIC (freezes correctly when paused) **/
     val infinite = rememberInfiniteTransition()
@@ -64,20 +54,6 @@ fun ModernMusicPlayerScreen(
     )
 
     // stores last rotation angle when paused
-    val lastStaticAngle = remember { mutableFloatStateOf(0f) }
-
-//    LaunchedEffect(isPlaying) {
-//        if (isPlaying) {
-//            while (isActive) {
-//                lastStaticAngle.floatValue = baseRotation % 360f
-//                delay(40)
-//            }
-//        }
-//    }
-//
-//    val appliedRotation =
-//        if (isPlaying) baseRotation % 360f else lastStaticAngle.floatValue
-
     val lastAngle = remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(isPlaying) {
@@ -138,32 +114,6 @@ fun ModernMusicPlayerScreen(
                 albumImage = track.image,
                 isPlaying = isPlaying
             )
-
-//
-//                // Outer progress arc
-//                Canvas(modifier = Modifier.fillMaxSize()) {
-//                    drawArc(
-//                        color = Color(0xFF4C4CFF),
-//                        startAngle = -90f,
-//                        sweepAngle = 220f,
-//                        useCenter = false,
-//                        style = Stroke(width = 10f, cap = StrokeCap.Round)
-//                    )
-//                }
-//
-//                // Album (rotating)
-//                Image(
-//                    bitmap = albumBitmap,
-//                    contentDescription = "Album Art",
-//                    modifier = Modifier
-//                        .size(230.dp)
-//                        .graphicsLayer {
-//                            rotationZ = appliedRotation
-//                        }
-//                        .clip(CircleShape)
-//                        .border(4.dp, Color.DarkGray, CircleShape),
-//                    contentScale = ContentScale.Crop
-//                )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -190,7 +140,7 @@ fun ModernMusicPlayerScreen(
                 ) {
                     IconButton(onClick = onPlayPause) {
                         Icon(
-                            if (isPlaying) Icons.Default.List else Icons.Default.PlayArrow,
+                            if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                             contentDescription = null,
                             tint = Color.Black,
                             modifier = Modifier.size(42.dp)
@@ -223,6 +173,23 @@ fun ModernMusicPlayerScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
+
+                val currentIndex = songList.indexOfFirst { it.id == track.id }
+                val nextTrack = remember(track) {
+                    if (songList.isNotEmpty() && currentIndex != -1)
+                        songList[(currentIndex + 1) % songList.size]
+                    else
+                        null
+                }
+
+                val albumBitmap: ImageBitmap = runCatching {
+                    ImageBitmap.imageResource(id = nextTrack?.image ?:0)
+                }.getOrElse  {
+                    // Fallback for preview/debug
+                    ImageBitmap.imageResource(R.drawable.ek_mulakat)
+                }
+
+
                 Image(
                     bitmap = albumBitmap,
                     contentDescription = null,
@@ -231,9 +198,11 @@ fun ModernMusicPlayerScreen(
                         .clip(RoundedCornerShape(10.dp))
                 )
 
+
+
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Text(text = track.name, color = Color.White, fontSize = 16.sp)
+                Text(text = nextTrack?.name ?: "", color = Color.White, fontSize = 16.sp)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(text = "3:23", color = Color.Gray, fontSize = 14.sp)
             }

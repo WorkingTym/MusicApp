@@ -18,3 +18,18 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Gradle runtime & cache (NEVER commit)
+.gradle/
+gradle/caches/
+gradle/daemon/
+gradle/kotlin-profile/
+gradle/android/
+**/CACHEDIR.TAG
+**/gc.properties
+**/*.bin
+# Ignore only wrapper downloads (safe)
+gradle/wrapper/dists/
+gradle/wrapper/
+gradle/native/
+
