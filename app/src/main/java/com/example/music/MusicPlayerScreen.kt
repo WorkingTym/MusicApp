@@ -7,10 +7,8 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -109,11 +107,11 @@ fun ModernMusicPlayerScreen(
             /** CIRCULAR ALBUM ART **/
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(280.dp)) {
 
-            RotatingAlbumWithLottie(
-                rotationAngle = appliedAngle,
-                albumImage = track.image,
-                isPlaying = isPlaying
-            )
+                RotatingAlbumWithLottie(
+                    rotationAngle = appliedAngle,
+                    albumImage = track.image,
+                    isPlaying = isPlaying
+                )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -183,8 +181,8 @@ fun ModernMusicPlayerScreen(
                 }
 
                 val albumBitmap: ImageBitmap = runCatching {
-                    ImageBitmap.imageResource(id = nextTrack?.image ?:0)
-                }.getOrElse  {
+                    ImageBitmap.imageResource(id = nextTrack?.image ?: 0)
+                }.getOrElse {
                     // Fallback for preview/debug
                     ImageBitmap.imageResource(R.drawable.ek_mulakat)
                 }
